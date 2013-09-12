@@ -1,4 +1,5 @@
 <?php
+Yii::import('ext.yii-bootstrap.widgets.TbActiveForm');
 
 /**
  * GxActiveForm class file.
@@ -13,9 +14,10 @@
  * GxActiveForm provides forms with additional features.
  *
  * @author Rodrigo Coelho <rodrigo@giix.org>
- * @package giix.components
  */
-class GxActiveForm extends CActiveForm {
+class GxActiveForm extends TbActiveForm {
+
+	public $type = self::TYPE_HORIZONTAL;
 
 	/**
 	 * Renders a checkbox list for a model attribute.
@@ -32,8 +34,11 @@ class GxActiveForm extends CActiveForm {
 	 * @param array $htmlOptions Addtional HTML options.
 	 * @return string The generated check box list.
 	 */
-	public function checkBoxList($model, $attribute, $data, $htmlOptions = array()) {
-		return GxHtml::activeCheckBoxList($model, $attribute, $data, $htmlOptions);
+	public function checkBoxListRow($model, $attribute, $data=array(), $htmlOptions = array()) {
+		return parent::checkBoxListRow($model, $attribute, $data, $htmlOptions);
 	}
 
+	protected  function getSelectForCheckBox($model, $attribute){
+		return GxHtml::selectData(GxHtml::resolveValue($model, $attribute));
+	}
 }
