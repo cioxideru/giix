@@ -10,7 +10,7 @@
 class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseControllerClass; ?> {
 
 <?php 
-	$authpath = 'ext.giix.generators.giixCrud.templates.default.auth.';
+	$authpath = 'giix.generators.giixCrud.templates.default.auth.';
 	Yii::app()->controller->renderPartial($authpath . $this->authtype);
 ?>
 
@@ -77,22 +77,31 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 
 	public function actionDelete($id) {
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
-			$this->loadModel($id, '<?php echo $this->modelClass; ?>')->delete();
+			try{
+				$this->loadModel($id, '<?php echo $this->modelClass; ?>')->delete();
+			}catch(Exception $ex)
+			{
+				if(YII_DEBUG)
+					throw $ex;
+
+				throw new CHttpException(404, Yii::t('app', 'You need to delete related data. Answers, Worksheets.'));
+				Yii::app()->end();
+			}
 
 			if (!Yii::app()->getRequest()->getIsAjaxRequest())
-				$this->redirect(array('admin'));
+				$this->redirect(array('index'));
 		} else
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
 
-	public function actionIndex() {
+	/*public function actionIndex() {
 		$dataProvider = new CActiveDataProvider('<?php echo $this->modelClass; ?>');
 		$this->render('index', array(
 			'dataProvider' => $dataProvider,
 		));
-	}
+	}*/
 
-	public function actionAdmin() {
+	public function actionIndex() {
 		$model = new <?php echo $this->modelClass; ?>('search');
 		$model->unsetAttributes();
 

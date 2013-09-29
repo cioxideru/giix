@@ -3,13 +3,14 @@
  * The following variables are available in this template:
  * - $this: the CrudCode object
  */
+echo "<?php\n";
 ?>
-<div class="wide form">
+echo GxHtml::openTag('div',array('class'=>'wide form'));
 
-<?php echo "<?php \$form = \$this->beginWidget('GxActiveForm', array(
-	'action' => Yii::app()->createUrl(\$this->route),
+$form = $this->beginWidget('GxActiveForm', array(
+	'action' => Yii::app()->createUrl($this->route),
 	'method' => 'get',
-)); ?>\n"; ?>
+));
 
 <?php foreach($this->tableSchema->columns as $column): ?>
 <?php
@@ -17,16 +18,14 @@
 	if (strpos($field, 'password') !== false)
 		continue;
 ?>
-	<div class="row">
-		<?php echo "<?php echo \$form->label(\$model, '{$column->name}'); ?>\n"; ?>
-		<?php echo "<?php " . $this->generateSearchField($this->modelClass, $column)."; ?>\n"; ?>
-	</div>
+	echo GxHtml::openTag('div',array('class'=>'row'));
+		<?php echo $this->generateSearchField($this->modelClass, $column).";\r\n"; ?>
+	echo GxHtml::closeTag('div');
 
 <?php endforeach; ?>
-	<div class="row buttons">
-		<?php echo "<?php echo GxHtml::submitButton('Search'); ?>\n"; ?>
-	</div>
+	echo GxHtml::openTag('div',array('class'=>'row buttons'));
+		echo GxHtml::submitButton(Yii::t('app', 'Search'));
+	echo GxHtml::closeTag('div');
+$this->endWidget();
 
-<?php echo "<?php \$this->endWidget(); ?>\n"; ?>
-
-</div><!-- search-form -->
+echo GxHtml::closeTag('div'); // form

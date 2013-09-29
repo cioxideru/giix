@@ -17,7 +17,7 @@
  */
 class GiixModelGenerator extends CCodeGenerator {
 
-	public $codeModel = 'ext.giix.generators.giixModel.GiixModelCode';
+	public $codeModel = 'giix.generators.giixModel.GiixModelCode';
 
 	/**
 	 * Returns the table names in an array.

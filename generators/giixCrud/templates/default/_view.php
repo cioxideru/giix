@@ -3,37 +3,30 @@
  * The following variables are available in this template:
  * - $this: the CrudCode object
  */
+echo "<?php\n";
 ?>
-<div class="view">
+echo GxHtml::openTag('div',array('class'=>'view'));
 
-	<?php echo '<?php'; ?> echo GxHtml::encode($data->getAttributeLabel('<?php echo $this->tableSchema->primaryKey; ?>')); <?php echo '?>'; ?>:
-	<?php echo '<?php'; ?> echo GxHtml::link(GxHtml::encode($data-><?php echo $this->tableSchema->primaryKey; ?>), array('view', 'id' => $data-><?php echo $this->tableSchema->primaryKey; ?>)); <?php echo "?>\n"; ?>
-	<br />
+	echo GxHtml::encode($data->getAttributeLabel('<?php echo $this->tableSchema->primaryKey; ?>'));
+	echo GxHtml::link(GxHtml::encode($data-><?php echo $this->tableSchema->primaryKey; ?>), array('view', 'id' => $data-><?php echo $this->tableSchema->primaryKey; ?>));
 
 <?php
 $count=0;
 foreach ($this->tableSchema->columns as $column):
 	if ($column->isPrimaryKey)
 		continue;
-	if (++$count == 7)
-		echo "\t<?php /*\n";
 ?>
+	echo GxHtml::encode($data->getAttributeLabel('<?php echo $column->name; ?>'));
 <?php if (!$column->isForeignKey): ?>
-	<?php echo '<?php'; ?> echo GxHtml::encode($data->getAttributeLabel('<?php echo $column->name; ?>')); <?php echo '?>'; ?>:
-	<?php echo '<?php'; ?> echo GxHtml::encode($data-><?php echo $column->name; ?>); <?php echo "?>\n"; ?>
+	echo GxHtml::encode($data-><?php echo $column->name; ?>);
 <?php else: ?>
-<?php
+	<?php
 	$relations = $this->findRelation($this->modelClass, $column);
 	$relationName = $relations[0];
-?>
-	<?php echo '<?php'; ?> echo GxHtml::encode($data->getAttributeLabel('<?php echo $relationName; ?>')); <?php echo '?>'; ?>:
-	<?php echo '<?php'; ?> echo GxHtml::encode(GxHtml::valueEx($data-><?php echo $relationName; ?>)); <?php echo "?>\n"; ?>
+	?>
+	echo GxHtml::encode(GxHtml::valueEx($data-><?php echo $relationName; ?>));
 <?php endif; ?>
-	<br />
-<?php endforeach; ?>
-<?php
-if($count>=7)
-	echo "\t*/ ?>\n";
-?>
 
-</div>
+<?php endforeach; ?>
+
+echo GxHtml::closeTag('div');//view

@@ -15,34 +15,34 @@ $('#{$class}_model').bind('keyup change', function(){
 });
 ");
 ?>
-<h1>giix Crud Generator</h1>
+	<h1>giix Crud Generator</h1>
 
-<p>This generator generates a controller and views that implement CRUD operations for the specified data model. </p>
+	<p>This generator generates a controller and views that implement CRUD operations for the specified data model. </p>
 
 <?php $form=$this->beginWidget('CCodeForm', array('model'=>$model)); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'model'); ?>
-        <?php $form->widget('zii.widgets.jui.CJuiAutoComplete', array(
-            'model'=>$model,
-            'attribute'=>'model',
-            'source'=>$this->getModels(),
-            'options'=>array(
-                'delay'=>100,
-                'focus'=>'js:function(event,ui){
+		<?php $form->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'model'=>$model,
+				'attribute'=>'model',
+				'source'=>$this->getModels(),
+				'options'=>array(
+					'delay'=>100,
+					'focus'=>'js:function(event,ui){
                     $(this).val($(ui.item).val());
                     $(this).trigger(\'change\');
                 }',
-            ),
-            'htmlOptions'=>array(
-                'size'=>'65',
-            ),
-        ));
-        ?>
+				),
+				'htmlOptions'=>array(
+					'size'=>'65',
+				),
+			));
+		?>
 		<div class="tooltip">
 			Model class is case-sensitive. It can be either a class name (e.g. <code>Post</code>)
-		    or the path alias of the class file (e.g. <code>application.models.Post</code>).
-		    Note that if the former, the class must be auto-loadable.
+			or the path alias of the class file (e.g. <code>application.models.Post</code>).
+			Note that if the former, the class must be auto-loadable.
 		</div>
 		<?php echo $form->error($model,'model'); ?>
 	</div>
@@ -69,15 +69,15 @@ $('#{$class}_model').bind('keyup change', function(){
 	<div class="row sticky">
 		<?php echo $form->labelEx($model, 'authtype'); ?>
 		<?php echo $form->dropDownList($model, 'authtype', array(
-					'auth_filter_default' => 'Yii access control(default ruleset)',
-					'auth_filter_strict' => 'Yii access control(more strict ruleset)',
-					'auth_yum' => 'Yii User Management access control',
-					'auth_none' => 'No access control')); ?>
+				'auth_filter_default' => 'Yii access control(default ruleset)',
+				'auth_filter_strict' => 'Yii access control(more strict ruleset)',
+				'auth_yum' => 'Yii User Management access control',
+				'auth_none' => 'No access control')); ?>
 		<div class="tooltip">
-				The Authentication method to be used in the Controller. Yii access Control is the 
-				default accessControl of Yii using the Controller accessRules() method. No access 
-				Control provides no Access control. In the future we will provide srbac and
-    		possibly other authtypes.
+			The Authentication method to be used in the Controller. Yii access Control is the
+			default accessControl of Yii using the Controller accessRules() method. No access
+			Control provides no Access control. In the future we will provide srbac and
+			possibly other authtypes.
 		</div>
 		<?php echo $form->error($model,'authtype'); ?>
 	</div>
@@ -85,12 +85,12 @@ $('#{$class}_model').bind('keyup change', function(){
 	<div class="row sticky">
 		<?php echo $form->labelEx($model, 'enable_ajax_validation'); ?>
 		<?php echo $form->dropDownList($model, 'enable_ajax_validation', array(
-					1 => 'Enable ajax Validation',
-					0 => 'Disable ajax Validation'
-					)); ?>
+				1 => 'Enable ajax Validation',
+				0 => 'Disable ajax Validation'
+			)); ?>
 		<div class="tooltip">
 			Enables instant Validation of input fields via Yii's form Generator and ajax
-      requests after blur() on the field.
+			requests after blur() on the field.
 		</div>
 		<?php echo $form->error($model,'persistent_sessions'); ?>
 	</div>

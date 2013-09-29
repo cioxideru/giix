@@ -3,50 +3,50 @@
  * The following variables are available in this template:
  * - $this: the CrudCode object
  */
+echo "<?php\n";
 ?>
-<?php
-echo "<?php\n
-\$this->breadcrumbs = array(
-	\$model->label(2) => array('index'),
-	'Manage',
-);\n";
-?>
+$this->breadcrumbs = array(
+	$model->label(2) => array('index'),
+	Yii::t('app', 'Manage'),
+);
 
 $this->menu = array(
-		array('label'=>'List' . ' ' . $model->label(2), 'url'=>array('index')),
-		array('label'=>'Create' . ' ' . $model->label(), 'url'=>array('create')),
+		array('label'=>Yii::t('app', 'Create') . ' ' . $model->label(), 'url'=>array('create'),'icon'=>'plus'),
 	);
 
 Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('<?php echo $this->class2id($this->modelClass); ?>-grid', {
-		data: $(this).serialize()
+	$('.search-button').click(function(){
+		$('.search-form').toggle();
+		return false;
 	});
-	return false;
-});
+	$('.search-form form').submit(function(){
+		$.fn.yiiGridView.update('<?php echo $this->class2id($this->modelClass); ?>-grid', {
+			data: $(this).serialize()
+		});
+		return false;
+	});
 ");
-?>
 
-<h1><?php echo '<?php'; ?> echo 'Manage' . ' ' . GxHtml::encode($model->label(2)); ?></h1>
+echo GxHtml::openTag('legend');
+	echo Yii::t('app', 'Manage') . ' ' . GxHtml::encode($model->label(2));
+echo GxHtml::closeTag('legend');
 
-<p>
-You may optionally enter a comparison operator (&lt;, &lt;=, &gt;, &gt;=, &lt;&gt; or =) at the beginning of each of your search values to specify how the comparison should be done.
-</p>
+echo GxHtml::openTag('p',array('class'=>'note'));
+ echo "You may optionally enter a comparison operator (&lt;, &lt;=, &gt;, &gt;=, &lt;&gt; or =) at the beginning of each of your search values to specify how the comparison should be done.";
+echo GxHtml::closeTag('p');
 
-<?php echo "<?php echo GxHtml::link('Advanced Search', '#', array('class' => 'search-button')); ?>"; ?>
+echo GxHtml::link(Yii::t('app', 'Advanced Search(click to open form)'), '#', array('class' => 'search-button'));
 
-<div class="search-form">
-<?php echo "<?php \$this->renderPartial('_search', array(
-	'model' => \$model,
-)); ?>\n"; ?>
-</div><!-- search-form -->
+echo GxHtml::openTag('div',array('class'=>'search-form','style'=>'display: none;'));
+$this->renderPartial('_search', array(
+	'model' => $model,
+));
+echo GxHtml::closeTag('div'); // search form
 
-<?php echo '<?php'; ?> $this->widget('zii.widgets.grid.CGridView', array(
+
+$this->widget('bootstrap.widgets.TbGridView', array(
 	'id' => '<?php echo $this->class2id($this->modelClass); ?>-grid',
+	'type'=>'striped bordered condensed',
 	'dataProvider' => $model->search(),
 	'filter' => $model,
 	'columns' => array(
@@ -54,14 +54,15 @@ You may optionally enter a comparison operator (&lt;, &lt;=, &gt;, &gt;=, &lt;&g
 $count = 0;
 foreach ($this->tableSchema->columns as $column) {
 	if (++$count == 7)
-		echo "\t\t/*\n";
-	echo "\t\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
+		echo "\t/*\n";
+	echo "\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
 }
 if ($count >= 7)
-	echo "\t\t*/\n";
+	echo "\t*/\n";
 ?>
 		array(
-			'class' => 'CButtonColumn',
+			'class' => 'bootstrap.widgets.TbButtonColumn',
+			'htmlOptions'=>array('style'=>'width: 50px'),
 		),
 	),
 )); ?>

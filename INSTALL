@@ -19,7 +19,7 @@ downloaded archive into your application's protected/extensions directory.
 	'gii' => array(
 		'class' => 'system.gii.GiiModule',
 		'generatorPaths' => array(
-			'ext.giix.generators', // giix generators
+			'giix.generators', // giix generators
 		),
 	),
 ),
@@ -28,7 +28,7 @@ downloaded archive into your application's protected/extensions directory.
 when needed, like:
 'import' => array(
 	...
-	'ext.giix.components.*', // giix components
+	'giix.components.*', // giix components
 ),
 
 4) Register the giix messages directory, like the example below.
@@ -39,7 +39,7 @@ See <http://code.google.com/p/yii/issues/detail?id=2624> for details and the pat
 	'messages' => array (
 		// Pending on core: http://code.google.com/p/yii/issues/detail?id=2624
 		'extensionBasePaths' => array(
-			'giix' => 'ext.giix.messages', // giix messages directory.
+			'giix' => 'giix.messages', // giix messages directory.
 		),
 	),
 ),

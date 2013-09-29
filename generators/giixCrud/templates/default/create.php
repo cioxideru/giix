@@ -3,25 +3,23 @@
  * The following variables are available in this template:
  * - $this: the CrudCode object
  */
+echo "<?php\n";
 ?>
-<?php
-echo "<?php\n
-\$this->breadcrumbs = array(
-	\$model->label(2) => array('index'),
-	'Create',
-);\n";
-?>
+
+$this->breadcrumbs = array(
+	$model->label(2) => array('index'),
+	Yii::t('app', 'Create'),
+);
 
 $this->menu = array(
-	array('label'=>'List' . ' ' . $model->label(2), 'url' => array('index')),
-	array('label'=>'Manage' . ' ' . $model->label(2), 'url' => array('admin')),
+	array('label'=>Yii::t('app', 'Manage') . ' ' . $model->label(2), 'url' => array('index'),'icon'=>'th-list'),
 );
-?>
 
-<h1><?php echo '<?php'; ?> echo 'Create' . ' ' . GxHtml::encode($model->label()); ?></h1>
+echo GxHtml::openTag('legend');
+	echo Yii::t('app', 'Create') . ' ' . GxHtml::encode($model->label());
+echo GxHtml::closeTag('legend');
 
-<?php echo "<?php\n"; ?>
 $this->renderPartial('_form', array(
-		'model' => $model,
-		'buttons' => 'create'));
-<?php echo '?>'; ?>
+	'model' => $model,
+	'buttons' => 'create')
+);
