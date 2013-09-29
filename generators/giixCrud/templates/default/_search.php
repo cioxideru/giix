@@ -21,12 +21,10 @@ $form = $this->beginWidget('GxActiveForm', array(
 <?php foreach($this->tableSchema->columns as $column): ?>
 <?php
 	$field = $this->generateInputField($this->modelClass, $column);
-	if (strpos($field, 'password') !== false)
+	if (strpos($field, 'password') !== false || $column->autoIncrement)
 		continue;
 ?>
-	//echo GxHtml::openTag('div',array('class'=>'row'));
-		<?php echo $this->generateSearchField($this->modelClass, $column).";\r\n"; ?>
-	//echo GxHtml::closeTag('div');
+	<?php echo $this->generateSearchField($this->modelClass, $column).";\r\n"; ?>
 
 <?php endforeach; ?>
 	echo GxHtml::openTag('div',array('class'=>'form-actions'));

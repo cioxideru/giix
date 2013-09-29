@@ -54,9 +54,12 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 <?php
 $count = 0;
 foreach ($this->tableSchema->columns as $column) {
-	if (++$count == 7)
+	if ($column->autoIncrement)
+		continue;
+	if (++$count == 7){
 		echo "\t/*\n";
-	echo "\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
+	}
+	echo "\t\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
 }
 if ($count >= 7)
 	echo "\t*/\n";
