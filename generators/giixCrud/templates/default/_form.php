@@ -8,11 +8,15 @@ echo "<?php\n";
 echo GxHtml::openTag('div',array('class'=>'form'));
 
 <?php $ajax = ($this->enable_ajax_validation) ? 'true' : 'false'; ?>
-
+/**
+* @var $form GxActiveForm
+* @var $this <?php echo $this->get ?>
+*/
 $form = $this->beginWidget('GxActiveForm', array(
 	'id' => '<?php echo $this->class2id($this->modelClass); ?>-form',
 	'enableAjaxValidation' => <?php echo $ajax; ?>,
 ));
+
 
 	echo GxHtml::openTag('p',array('class'=>'note'));
 		echo Yii::t('app', 'Fields with'). ' <span class="required">*</span> '. Yii::t('app', 'are required').'.';
