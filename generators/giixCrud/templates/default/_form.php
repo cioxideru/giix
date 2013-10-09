@@ -10,12 +10,16 @@ echo GxHtml::openTag('div',array('class'=>'form'));
 <?php $ajax = ($this->enable_ajax_validation) ? 'true' : 'false'; ?>
 /**
 * @var $form GxActiveForm
-* @var $this <?php echo $this->get ?>
+* @var $this <?php echo $this->controllerClass; ?>
+
+* @var $model <?php echo $this->modelClass; ?>
+
 */
 $form = $this->beginWidget('GxActiveForm', array(
-	'id' => '<?php echo $this->class2id($this->modelClass); ?>-form',
-	'enableAjaxValidation' => <?php echo $ajax; ?>,
-));
+		'id' => '<?php echo $this->class2id($this->modelClass); ?>-form',
+		'enableAjaxValidation' => <?php echo $ajax; ?>,
+	)
+);
 
 
 	echo GxHtml::openTag('p',array('class'=>'note'));
@@ -24,11 +28,13 @@ $form = $this->beginWidget('GxActiveForm', array(
 
 	echo $form->errorSummary($model);
 
-<?php foreach ($this->tableSchema->columns as $column): ?>
-<?php if (!$column->autoIncrement): ?>
-	<?php echo $this->generateActiveField($this->modelClass, $column).";\r\n"; ?>
-<?php endif; ?>
-<?php endforeach; ?>
+<?php
+foreach ($this->tableSchema->columns as $column){
+	if (!$column->autoIncrement){
+		echo $this->generateActiveField($this->modelClass, $column).";\r\n";
+	}
+}
+?>
 
 <?php foreach ($this->getRelations($this->modelClass) as  $relation): ?>
 <?php if (($relation[1] == GxActiveRecord::HAS_MANY || $relation[1] == GxActiveRecord::MANY_MANY) && stripos($relation[0],'2')===false): ?>

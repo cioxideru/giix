@@ -27,7 +27,8 @@ $this->widget('bootstrap.widgets.TbDetailView', array(
 	'attributes' => array(
 <?php
 foreach ($this->tableSchema->columns as $column)
-		echo "\t".$this->generateDetailViewAttribute($this->modelClass, $column) . ",\n";
+	if(!$column->autoIncrement)
+		echo "\t\t".$this->generateDetailViewAttribute($this->modelClass, $column) . ",\n";
 ?>
 	),
 ));
@@ -38,7 +39,7 @@ echo GxHtml::openTag('h2').GxHtml::encode($model->getRelationLabel('<?php echo $
 	echo GxHtml::openTag('ul');
 	foreach($model-><?php echo $relationName; ?> as $relatedModel) {
 		echo GxHtml::openTag('li');
-		echo GxHtml::link(GxHtml::encode(GxHtml::valueEx($relatedModel)), array('<?php echo strtolower($relation[1][0]) . substr($relation[1], 1); ?>/view', 'id' => GxActiveRecord::extractPkValue($relatedModel, true)));
+			echo GxHtml::link(GxHtml::encode(GxHtml::valueEx($relatedModel)), array('<?php echo strtolower($relation[1][0]) . substr($relation[1], 1); ?>/view', 'id' => GxActiveRecord::extractPkValue($relatedModel, true)));
 		echo GxHtml::closeTag('li');
 	}
 	echo GxHtml::closeTag('ul');

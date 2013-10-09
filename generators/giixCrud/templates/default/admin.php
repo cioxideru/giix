@@ -32,15 +32,16 @@ echo GxHtml::openTag('legend');
 echo GxHtml::closeTag('legend');
 
 echo GxHtml::openTag('p',array('class'=>'note'));
- echo "You may optionally enter a comparison operator (&lt;, &lt;=, &gt;, &gt;=, &lt;&gt; or =) at the beginning of each of your search values to specify how the comparison should be done.";
+	echo "You may optionally enter a comparison operator (&lt;, &lt;=, &gt;, &gt;=, &lt;&gt; or =) at the beginning of each of your search values to specify how the comparison should be done.";
 echo GxHtml::closeTag('p');
 
 echo GxHtml::link(Yii::t('app', 'Advanced Search(click to open form)'), '#', array('class' => 'search-button'));
 
 echo GxHtml::openTag('div',array('class'=>'search-form','style'=>'display: none;'));
-$this->renderPartial('_search', array(
-	'model' => $model,
-));
+	$this->renderPartial('_search', array(
+			'model' => $model,
+		)
+	);
 echo GxHtml::closeTag('div'); // search form
 
 
@@ -53,9 +54,12 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 <?php
 $count = 0;
 foreach ($this->tableSchema->columns as $column) {
-	if (++$count == 7)
+	if ($column->autoIncrement)
+		continue;
+	if (++$count == 7){
 		echo "\t/*\n";
-	echo "\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
+	}
+	echo "\t\t" . $this->generateGridViewColumn($this->modelClass, $column).",\n";
 }
 if ($count >= 7)
 	echo "\t*/\n";

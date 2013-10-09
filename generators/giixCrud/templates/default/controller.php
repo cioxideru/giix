@@ -84,7 +84,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 				if(YII_DEBUG)
 					throw $ex;
 
-				throw new CHttpException(404, Yii::t('app', 'You need to delete related data. Answers, Worksheets.'));
+				throw new CHttpException(404, Yii::t('app', 'You need to delete related data.'));
 				Yii::app()->end();
 			}
 
