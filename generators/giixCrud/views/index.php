@@ -83,6 +83,19 @@ $('#{$class}_model').bind('keyup change', function(){
 	</div>
 
 	<div class="row sticky">
+		<?php echo $form->labelEx($model, 'form_inline'); ?>
+		<?php echo $form->dropDownList($model, 'form_inline', array(
+					'horizontal' => 'Horizontal style',
+					'vertical' => 'Vertical',
+					'inline' => 'Inline',
+					'search' => 'Search',
+				)
+			);
+		?>
+		<?php echo $form->error($model,'form_inline'); ?>
+	</div>
+
+	<div class="row sticky">
 		<?php echo $form->labelEx($model, 'enable_ajax_validation'); ?>
 		<?php echo $form->dropDownList($model, 'enable_ajax_validation', array(
 				1 => 'Enable ajax Validation',

@@ -24,6 +24,10 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public $authtype = 'auth_none';
 	/**
+	 * @var string The type of form inputs.
+	 */
+	public $form_inline = 'horizontal';
+	/**
 	 * @var int Specifies if ajax validation is enabled. 0 represents false, 1 represents true.
 	 */
 	public $enable_ajax_validation = 0;
@@ -42,7 +46,7 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public function rules() {
 		return array_merge(parent::rules(), array(
-			array('authtype, enable_ajax_validation', 'required'),
+			array('authtype,form_inline, enable_ajax_validation', 'required'),
 		));
 	}
 
@@ -56,9 +60,11 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public function attributeLabels() {
 		return array_merge(parent::attributeLabels(), array(
-			'authtype' => 'Authentication type',
-			'enable_ajax_validation' => 'Enable ajax validation',
-		));
+				'authtype' => 'Authentication type',
+				'form_inline' => 'Form input style',
+				'enable_ajax_validation' => 'Enable ajax validation',
+			)
+		);
 	}
 
 	/**
@@ -75,43 +81,35 @@ class GiixCrudCode extends CrudCode {
 	 * @return string The source code line for the active field.
 	 */
 	public function generateActiveField($modelClass, $column) {
+
 		if ($column->isForeignKey) {
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
-			return "echo \$form->dropDownListRow(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)))";
+			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)))";
 		}
 
 		if (strtoupper($column->dbType) == 'TINYINT(1)'
 				|| strtoupper($column->dbType) == 'BIT'
 				|| strtoupper($column->dbType) == 'BOOL'
 				|| strtoupper($column->dbType) == 'BOOLEAN') {
-			return "echo \$form->checkBoxRow(\$model, '{$column->name}')";
+			return "\$form->checkBoxControlGroup(\$model,'{$column->name}')";
 		} else if (strtoupper($column->dbType) == 'DATE') {
-			return "\$form->widget('zii.widgets.jui.CJuiDatePicker', array(
-			'model' => \$model,
-			'attribute' => '{$column->name}',
-			'value' => \$model->{$column->name},
-			'options' => array(
-				'showButtonPanel' => true,
-				'changeYear' => true,
-				'dateFormat' => 'yy-mm-dd',
-				),
-			));\n";
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datapicker','span'=>5))";
 		} else if (stripos($column->dbType, 'text') !== false) { // Start of CrudCode::generateActiveField code.
-			return "echo \$form->textAreaRow(\$model, '{$column->name}')";
+			return "\$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
 		} else {
 			$passwordI18n = Yii::t('app', 'password');
 			$passwordI18n = (isset($passwordI18n) && $passwordI18n !== '') ? '|' . $passwordI18n : '';
 			$pattern = '/^(password|pass|passwd|passcode' . $passwordI18n . ')$/i';
 			if (preg_match($pattern, $column->name))
-				$inputField = 'passwordField';
+				$inputField = 'passwordFieldControlGroup';
 			else
-				$inputField='textField';
+				$inputField='textFieldControlGroup';
 
 			if ($column->type !== 'string' || $column->size === null)
-				return "echo \$form->{$inputField}Row(\$model, '{$column->name}')";
+				return "echo \$form->{$inputField}(\$model, '{$column->name}',array('span'=>5))";
 			else
-				return "echo \$form->{$inputField}Row(\$model, '{$column->name}', array('maxlength' => {$column->size}))";
+				return "echo \$form->{$inputField}(\$model, '{$column->name}', array('span'=>5, 'maxlength' => {$column->size}))";
 		} // End of CrudCode::generateActiveField code.
 	}
 
@@ -138,11 +136,11 @@ class GiixCrudCode extends CrudCode {
 		// Generate the field according to the relation type.
 		switch ($relationType) {
 			case GxActiveRecord::HAS_ONE:
-				return "echo \$form->dropDownListRow(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)))";
+				return "echo \$form->dropDownListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)))";
 				break;
 			case GxActiveRecord::HAS_MANY:
 			case GxActiveRecord::MANY_MANY:
-				return "echo \$form->checkBoxListRow(\$model, '{$relationName}', GxHtml::encodeEx(GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)), false, true))";
+				return "echo \$form->checkBoxControlGroup(\$model, '{$relationName}', GxHtml::encodeEx(GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)), false, true))";
 				break;
 		}
 	}
@@ -230,14 +228,14 @@ class GiixCrudCode extends CrudCode {
 					|| strtoupper($column->dbType) == 'BIT'
 					|| strtoupper($column->dbType) == 'BOOL'
 					|| strtoupper($column->dbType) == 'BOOLEAN')
-				return "echo \$form->dropDownListRow(\$model, '{$column->name}', array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')), array('prompt' => Yii::t('app', 'All')))";
+				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')), array('prompt' => Yii::t('app', 'All')))";
 			else // Common column. generateActiveField method will add 'echo' when necessary.
 				return $this->generateActiveField($this->modelClass, $column);
 		} else { // FK.
 			// Find the related model for this column.
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
-			return "echo \$form->dropDownListRow(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All')))";
+			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All')))";
 		}
 	}
 

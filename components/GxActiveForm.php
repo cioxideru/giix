@@ -1,5 +1,5 @@
 <?php
-Yii::import('ext.yii-bootstrap.widgets.TbActiveForm');
+Yii::import('bootstrap.widgets.TbActiveForm');
 
 /**
  * GxActiveForm class file.
@@ -17,7 +17,7 @@ Yii::import('ext.yii-bootstrap.widgets.TbActiveForm');
  */
 class GxActiveForm extends TbActiveForm {
 
-	public $type = self::TYPE_HORIZONTAL;
+	public $helpType = TbHtml::HELP_TYPE_BLOCK;
 
 	/**
 	 * Renders a checkbox list for a model attribute.

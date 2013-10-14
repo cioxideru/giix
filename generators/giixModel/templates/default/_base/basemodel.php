@@ -116,16 +116,27 @@ abstract class <?php echo $this->baseModelClass; ?> extends <?php echo $this->ba
 		);
 	}
 
-	public function search() {
+	protected function initDefaultSearchCriteria(){
 		$criteria = new CDbCriteria;
-
 <?php foreach($columns as $name=>$column): ?>
-<?php $partial = ($column->type==='string' and !$column->isForeignKey); ?>
-		$criteria->compare('<?php echo $name; ?>', $this-><?php echo $name; ?><?php echo $partial ? ', true' : ''; ?>);
+	<?php $partial = ($column->type==='string' and !$column->isForeignKey); ?>
+	$criteria->compare('<?php echo $name; ?>', $this-><?php echo $name; ?><?php echo $partial ? ', true' : ''; ?>);
 <?php endforeach; ?>
+		return $criteria;
+	}
+
+	public function search() {
+		$criteria = initDefaultSearchCriteria();
 
 		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
+				'criteria' => $criteria,
+				'pagination'=>array(
+					'class'=>'UPagination',
+				),
+				/*'sort'=>array(
+					'defaultOrder'=>array('id'=>true),
+				)*/
+			)
+		);
 	}
 }

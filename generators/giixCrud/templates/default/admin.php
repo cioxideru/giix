@@ -50,6 +50,9 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 	'type'=>'striped bordered condensed',
 	'dataProvider' => $model->search(),
 	'filter' => $model,
+	'pager'=>array(
+		'class'=>'ext.AjaxList.AjaxList',
+	),
 	'columns' => array(
 <?php
 $count = 0;
@@ -67,6 +70,17 @@ if ($count >= 7)
 		array(
 			'class' => 'bootstrap.widgets.TbButtonColumn',
 			'htmlOptions'=>array('style'=>'width: 50px'),
+			'buttons'=>array(
+				'update' => array(
+					'visible' => 'true',
+				),
+				'delete' => array(
+					'visible' => 'true',
+				),
+				'view' => array(
+					'visible' => 'true',
+				),
+			),
 		),
 	),
 )); ?>
