@@ -35,7 +35,7 @@ foreach ($this->tableSchema->columns as $column)
 
 <?php foreach (GxActiveRecord::model($this->modelClass)->relations() as $relationName => $relation): ?>
 <?php if (($relation[0] == GxActiveRecord::HAS_MANY || $relation[0] == GxActiveRecord::MANY_MANY) && stripos($relationName,'2')===false): ?>
-echo GxHtml::openTag('h2').GxHtml::encode($model->getRelationLabel('<?php echo $relationName; ?>')).GxHtml::closeTag('h2');
+echo GxHtml::openTag('legend').GxHtml::encode($model->getRelationLabel('<?php echo $relationName; ?>')).GxHtml::closeTag('legend');
 	echo GxHtml::openTag('ul');
 	foreach($model-><?php echo $relationName; ?> as $relatedModel) {
 		echo GxHtml::openTag('li');

@@ -126,7 +126,7 @@ abstract class <?php echo $this->baseModelClass; ?> extends <?php echo $this->ba
 	}
 
 	public function search() {
-		$criteria = initDefaultSearchCriteria();
+		$criteria = $this->initDefaultSearchCriteria();
 
 		return new CActiveDataProvider($this, array(
 				'criteria' => $criteria,

@@ -30,7 +30,7 @@ class GiixCrudCode extends CrudCode {
 	/**
 	 * @var int Specifies if ajax validation is enabled. 0 represents false, 1 represents true.
 	 */
-	public $enable_ajax_validation = 0;
+	public $enable_ajax_validation = true;
 	/**
 	 * @var string The controller base class name.
 	 */
@@ -76,7 +76,7 @@ class GiixCrudCode extends CrudCode {
 	 * <ul>
 	 * <li>All styling is removed.</li>
 	 * </ul>
-	 * @param string $modelClass The model class name.
+	 * @param GxActiveRecord $modelClass The model class name.
 	 * @param CDbColumnSchema $column The column.
 	 * @return string The source code line for the active field.
 	 */
@@ -92,12 +92,32 @@ class GiixCrudCode extends CrudCode {
 				|| strtoupper($column->dbType) == 'BIT'
 				|| strtoupper($column->dbType) == 'BOOL'
 				|| strtoupper($column->dbType) == 'BOOLEAN') {
-			return "\$form->checkBoxControlGroup(\$model,'{$column->name}')";
-		} else if (strtoupper($column->dbType) == 'DATE') {
+			return "echo \$form->checkBoxControlGroup(\$model,'{$column->name}')";
+		}
+		elseif (stripos(strtoupper($column->dbType),'TINYINT')!==false) {
+			$validators = $modelClass::model()->getValidators($column->name);
+			foreach($validators as $v){
+				if($v instanceof EnumValidator){
+					return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', {$v->enumClass}::getDataForDropDown())";
+					break;
+				}
+			}
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('maxlength' => {$column->size},'span'=>5))";
+		}
+		elseif (strtoupper($column->dbType) == 'DATE')
+		{
 			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datapicker','span'=>5))";
-		} else if (stripos($column->dbType, 'text') !== false) { // Start of CrudCode::generateActiveField code.
-			return "\$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
-		} else {
+		}
+		elseif(strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP')
+		{
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datatimepicker','span'=>5))";
+		}
+		elseif (stripos($column->dbType, 'text') !== false)
+		{
+			return "echo \$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
+		}
+		else
+		{
 			$passwordI18n = Yii::t('app', 'password');
 			$passwordI18n = (isset($passwordI18n) && $passwordI18n !== '') ? '|' . $passwordI18n : '';
 			$pattern = '/^(password|pass|passwd|passcode' . $passwordI18n . ')$/i';
@@ -110,7 +130,7 @@ class GiixCrudCode extends CrudCode {
 				return "echo \$form->{$inputField}(\$model, '{$column->name}',array('span'=>5))";
 			else
 				return "echo \$form->{$inputField}(\$model, '{$column->name}', array('span'=>5, 'maxlength' => {$column->size}))";
-		} // End of CrudCode::generateActiveField code.
+		}
 	}
 
 	/**
@@ -140,7 +160,7 @@ class GiixCrudCode extends CrudCode {
 				break;
 			case GxActiveRecord::HAS_MANY:
 			case GxActiveRecord::MANY_MANY:
-				return "echo \$form->checkBoxControlGroup(\$model, '{$relationName}', GxHtml::encodeEx(GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)), false, true))";
+				return "echo \$form->checkBoxListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)))";
 				break;
 		}
 	}
@@ -189,18 +209,41 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public function generateGridViewColumn($modelClass, $column) {
 		if (!$column->isForeignKey) {
-			// Boolean or bit.
 			if (strtoupper($column->dbType) == 'TINYINT(1)'
 					|| strtoupper($column->dbType) == 'BIT'
 					|| strtoupper($column->dbType) == 'BOOL'
 					|| strtoupper($column->dbType) == 'BOOLEAN') {
 				return "array(
-					'name' => '{$column->name}',
-					'value' => '(\$data->{$column->name} === 0) ? Yii::t(\\'app\\', \\'No\\') : Yii::t(\\'app\\', \\'Yes\\')',
-					'filter' => array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')),
+						'name' => '{$column->name}',
+						'value' => '(\$data->{$column->name} === 0) ? Yii::t(\\'app\\', \\'No\\') : Yii::t(\\'app\\', \\'Yes\\')',
+						'filter' => array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')),
 					)";
-			} else // Common column.
-				return "'{$column->name}'";
+			}
+			elseif (stripos(strtoupper($column->dbType),'TINYINT')!==false)
+			{
+				$validators = $modelClass::model()->getValidators($column->name);
+				foreach($validators as $v){
+					if($v instanceof EnumValidator){
+						return "array(
+						'name' => '{$column->name}',
+						'value'=>'{$v->enumClass}::getName(\$data->{$column->name})',
+						'filter'=>{$v->enumClass}::getDataForDropDown(),
+					)";
+						break;
+					}
+				}
+			}elseif (strtoupper($column->dbType) == 'DATE'){
+				return "array(
+						'name' => '{$column->name}',
+						'type'=>'date',
+					)";
+			}elseif (strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP'){
+				return "array(
+						'name' => '{$column->name}',
+						'type'=>'datetime',
+					)";
+			}
+			return "'{$column->name}'";
 		} else { // FK.
 			// Find the related model for this column.
 			$relation = $this->findRelation($modelClass, $column);

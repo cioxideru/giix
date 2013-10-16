@@ -445,6 +445,7 @@ abstract class GxActiveRecord extends CActiveRecord {
 			{
 				if (preg_match('/(.+)\((.+),\s*(.+)\)/', $activeRelation->foreignKey, $matches)) {
 					// By convention, the first fk is for this model, the second is for the related model.
+					$m2mTableName = $matches[1];
 					$thisFkName = $matches[2];
 					$relatedFkName = $matches[3];
 				}
@@ -455,16 +456,59 @@ abstract class GxActiveRecord extends CActiveRecord {
 				if (is_array($thisPkValue)){
 					throw new Exception(Yii::t('giix', 'Composite primary keys are not supported.'));
 				}
+				//Yii::import('giix.generators.giixModel.GiixModelCode');
+				//$giixModelCode = new GiixModelCode();
+				$m2mModelName =$pivotClassNames[$m2mTableName];;
+				$m2mModel = GxActiveRecord::model($m2mModelName);
+				/*CVarDumper::dump(compact(
+						'activeRelation',
+						'relatedClassName',
+						'relationData',
+						'pivotModelStatic',
+						'thisPkValue',
+						'thisFkName',
+						'relatedFkName',
+						'm2mTableName',
+						'm2mModel',
+						'm2mModelName'
+					),10,true);*/
+			//die();
 				// Get the current related models of this relation and map the current related primary keys.
-				$currentRelation = $pivotModelStatic->findAll(new CDbCriteria(array(
-							'select' => $relatedFkName,
-							'condition' => "$thisFkName = :thisfkvalue",
-							'params' => array(':thisfkvalue' => $thisPkValue),
-						)
+				$criteria = new CDbCriteria(array(
+						'select' => $relatedFkName,
+						'condition' => "$thisFkName = :thisfkvalue",
+						'params' => array(':thisfkvalue' => $thisPkValue),
 					)
 				);
+				if($activeRelation->condition)
+					$criteria->addCondition($activeRelation->condition);
+				if($activeRelation->on)
+					$criteria->addCondition($activeRelation->on);
 
+				$currentRelation = $m2mModel->findAll($criteria);
+
+				/*CVarDumper::dump(compact(
+					'thisPkValue',
+					'thisFkName',
+						'relatedFkName',
+						'currentRelation',
+						'activeRelation'
+					),10,true
+				);
+				die();*/
 				list($deleteMap,$insertMap) = $this->calcMapKeys($currentRelation,$relatedFkName,$relationData,$thisFkName,$thisPkValue);
+
+			/*	CVarDumper::dump(compact(
+						'currentRelation',
+						'relatedFkName',
+						'thisFkName',
+						'thisPkValue',
+						'deleteMap',
+						'insertMap'
+					),10,true
+				);
+
+				die();*/
 
 				// Now act inserting and deleting the related data: then execute the changes.
 				// Delete the data.
@@ -489,7 +533,7 @@ abstract class GxActiveRecord extends CActiveRecord {
 				// Insert the new data.
 				if (!empty($insertMap)) {
 					foreach ($insertMap as $value) {
-						$pivotModel = new $pivotClassName();
+						$pivotModel = new $m2mModel();
 						$pivotModel->setAttributes($value);
 						if (!$pivotModel->save($runValidation)) {
 							return false;

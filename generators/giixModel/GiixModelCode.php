@@ -32,6 +32,7 @@ class GiixModelCode extends ModelCode {
 	 */
 	public $baseModelClass;
 
+
 	/**
 	 * Prepares the code files to be generated.
 	 * #MethodTracker
