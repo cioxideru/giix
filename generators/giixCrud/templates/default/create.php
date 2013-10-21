@@ -12,6 +12,7 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
+	array('label'=>Yii::t('app', 'Create') . ' ' . $model->label(), 'url'=>array('create'),'icon'=>'plus','active'=>true),
 	array('label'=>Yii::t('app', 'Manage') . ' ' . $model->label(2), 'url' => array('index'),'icon'=>'th-list'),
 );
 
@@ -19,7 +20,4 @@ echo GxHtml::openTag('legend');
 	echo Yii::t('app', 'Create') . ' ' . GxHtml::encode($model->label());
 echo GxHtml::closeTag('legend');
 
-$this->renderPartial('_form', array(
-	'model' => $model,
-	'buttons' => 'create')
-);
+$this->renderPartial('_form', compact(array_keys(get_defined_vars())));

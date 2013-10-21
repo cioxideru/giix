@@ -16,19 +16,23 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 
 	public function actionView($id) {
 		$this->render('view', array(
-			'model' => $this->loadModel($id, '<?php echo $this->modelClass; ?>'),
-		));
+				'model' => $this->loadModel($id, '<?php echo $this->modelClass; ?>'),
+			)
+		);
 	}
 
 	public function actionCreate() {
+		/**
+		* @var $model <?php echo $this->modelClass; ?>
+		*/
 		$model = new <?php echo $this->modelClass; ?>;
 
 <?php if ($this->enable_ajax_validation): ?>
 		$this->performAjaxValidation($model, '<?php echo $this->class2id($this->modelClass)?>-form');
 <?php endif; ?>
 
-		if (isset($_POST['<?php echo $this->modelClass; ?>'])) {
-			$model->setAttributes($_POST['<?php echo $this->modelClass; ?>']);
+		if (Yii::app()->request->getIsPostRequest() && $this->getPost('<?php echo $this->modelClass; ?>') !== null) {
+			$model->setAttributes($this->getPost('<?php echo $this->modelClass; ?>'));
 <?php if ($this->hasManyManyRelation($this->modelClass)): ?>
 			$relatedData = <?php echo $this->generateGetPostRelatedData($this->modelClass, 4); ?>;
 <?php endif; ?>
@@ -49,14 +53,17 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 	}
 
 	public function actionUpdate($id) {
+		/**
+		* @var $model <?php echo $this->modelClass; ?>
+		*/
 		$model = $this->loadModel($id, '<?php echo $this->modelClass; ?>');
 
 <?php if ($this->enable_ajax_validation): ?>
 		$this->performAjaxValidation($model, '<?php echo $this->class2id($this->modelClass)?>-form');
 <?php endif; ?>
 
-		if (isset($_POST['<?php echo $this->modelClass; ?>'])) {
-			$model->setAttributes($_POST['<?php echo $this->modelClass; ?>']);
+		if (Yii::app()->request->getIsPostRequest() && $this->getPost('<?php echo $this->modelClass; ?>') !== null) {
+			$model->setAttributes($this->getPost('<?php echo $this->modelClass; ?>'));
 <?php if ($this->hasManyManyRelation($this->modelClass)): ?>
 			$relatedData = <?php echo $this->generateGetPostRelatedData($this->modelClass, 4); ?>;
 <?php endif; ?>
@@ -72,7 +79,8 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 
 		$this->render('update', array(
 				'model' => $model,
-				));
+			)
+		);
 	}
 
 	public function actionDelete($id) {
@@ -94,23 +102,17 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
 
-	/*public function actionIndex() {
-		$dataProvider = new CActiveDataProvider('<?php echo $this->modelClass; ?>');
-		$this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
-	}*/
-
 	public function actionIndex() {
 		$model = new <?php echo $this->modelClass; ?>('search');
 		$model->unsetAttributes();
 
-		if (isset($_GET['<?php echo $this->modelClass; ?>']))
-			$model->setAttributes($_GET['<?php echo $this->modelClass; ?>']);
+		if ($this->getParam('<?php echo $this->modelClass; ?>')!== null)
+			$model->setAttributes($this->getParam('<?php echo $this->modelClass; ?>'));
 
 		$this->render('admin', array(
-			'model' => $model,
-		));
+				'model' => $model,
+			)
+		);
 	}
 
 }

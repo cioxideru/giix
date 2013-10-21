@@ -12,6 +12,7 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 		array('label'=>Yii::t('app', 'Create') . ' ' . $model->label(), 'url'=>array('create'),'icon'=>'plus'),
+		array('label'=>Yii::t('app', 'Manage') . ' ' . $model->label(2), 'url' => array('index'),'icon'=>'th-list','active'=>true),
 	);
 
 Yii::app()->clientScript->registerScript('search', "
@@ -38,10 +39,7 @@ echo GxHtml::closeTag('p');
 echo GxHtml::link(Yii::t('app', 'Advanced Search(click to open form)'), '#', array('class' => 'search-button'));
 
 echo GxHtml::openTag('div',array('class'=>'search-form','style'=>'display: none;'));
-	$this->renderPartial('_search', array(
-			'model' => $model,
-		)
-	);
+	$this->renderPartial('_search', compact(array_keys(get_defined_vars())));
 echo GxHtml::closeTag('div'); // search form
 
 

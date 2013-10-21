@@ -85,7 +85,7 @@ class GiixCrudCode extends CrudCode {
 		if ($column->isForeignKey) {
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
-			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)))";
+			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5))";
 		}
 
 		if (strtoupper($column->dbType) == 'TINYINT(1)'
@@ -98,7 +98,7 @@ class GiixCrudCode extends CrudCode {
 			$validators = $modelClass::model()->getValidators($column->name);
 			foreach($validators as $v){
 				if($v instanceof EnumValidator){
-					return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', {$v->enumClass}::getDataForDropDown())";
+					return "echo \$form->radioButtonListControlGroup(\$model, '{$column->name}', {$v->enumClass}::getDataForDropDown(),array('span'=>5))";
 					break;
 				}
 			}
@@ -110,6 +110,14 @@ class GiixCrudCode extends CrudCode {
 		}
 		elseif(strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP')
 		{
+			/*return "echo '<div class=\"input-append\">'; \$this->widget(
+				'yiiwheels.widgets.datetimepicker.WhDateTimePicker',
+				array(
+					'model'=> \$model,
+					'attribute' => '{$column->name}',
+					'data-format' => 'mm/dd/yyyy hh:mm:ss'
+				)
+			);";*/
 			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datatimepicker','span'=>5))";
 		}
 		elseif (stripos($column->dbType, 'text') !== false)
@@ -121,10 +129,25 @@ class GiixCrudCode extends CrudCode {
 			$passwordI18n = Yii::t('app', 'password');
 			$passwordI18n = (isset($passwordI18n) && $passwordI18n !== '') ? '|' . $passwordI18n : '';
 			$pattern = '/^(password|pass|passwd|passcode' . $passwordI18n . ')$/i';
-			if (preg_match($pattern, $column->name))
+			if (preg_match($pattern, $column->name)){
 				$inputField = 'passwordFieldControlGroup';
-			else
+			}
+			elseif(stripos('phone',$column->name)!==false || stripos('fax',$column->name)!==false || stripos('mobile',$column->name)!==false)
+			{
+				return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('span'=>5,'data-mask' => '+9 (999)-999-99-99'))";
+				/*return "\$this->widget(
+						'yiiwheels.widgets.formhelpers.WhPhone',
+						array(
+							'model' => \$model,
+							'attribute'=>'{$column->name}',
+							'format' => '+1 (ddd) ddd-dddd',
+							'readOnly'=>false,
+						)
+					);";*/
+			}
+			else{
 				$inputField='textFieldControlGroup';
+			}
 
 			if ($column->type !== 'string' || $column->size === null)
 				return "echo \$form->{$inputField}(\$model, '{$column->name}',array('span'=>5))";
@@ -156,11 +179,11 @@ class GiixCrudCode extends CrudCode {
 		// Generate the field according to the relation type.
 		switch ($relationType) {
 			case GxActiveRecord::HAS_ONE:
-				return "echo \$form->dropDownListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)))";
+				return "echo \$form->dropDownListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)),array('span'=>5))";
 				break;
 			case GxActiveRecord::HAS_MANY:
 			case GxActiveRecord::MANY_MANY:
-				return "echo \$form->checkBoxListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)))";
+				return "echo \$form->checkBoxListControlGroup(\$model, '{$relationName}', GxHtml::listDataEx({$relationModel}::model()->findAllAttributes(null, true)),array('span'=>5))";
 				break;
 		}
 	}
