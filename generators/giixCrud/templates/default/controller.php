@@ -15,24 +15,24 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 ?>
 
 	public function actionView($id) {
-		$this->render('view', array(
-				'model' => $this->loadModel($id, '<?php echo $this->modelClass; ?>'),
-			)
-		);
+		$model = $this->loadModel($id, '<?php echo $this->modelClass; ?>');
+		$this->render('view', compact('model'));
 	}
 
 	public function actionCreate() {
 		/**
 		* @var $model <?php echo $this->modelClass; ?>
+
 		*/
 		$model = new <?php echo $this->modelClass; ?>;
+		$data = $this->getPost('<?php echo $this->modelClass; ?>');
 
 <?php if ($this->enable_ajax_validation): ?>
 		$this->performAjaxValidation($model, '<?php echo $this->class2id($this->modelClass)?>-form');
 <?php endif; ?>
 
-		if (Yii::app()->request->getIsPostRequest() && $this->getPost('<?php echo $this->modelClass; ?>') !== null) {
-			$model->setAttributes($this->getPost('<?php echo $this->modelClass; ?>'));
+		if (Yii::app()->request->getIsPostRequest() && $data !== null) {
+			$model->setAttributes($data);
 <?php if ($this->hasManyManyRelation($this->modelClass)): ?>
 			$relatedData = <?php echo $this->generateGetPostRelatedData($this->modelClass, 4); ?>;
 <?php endif; ?>
@@ -49,21 +49,23 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 			}
 		}
 
-		$this->render('create', array( 'model' => $model));
+		$this->render('create', compact( 'model'));
 	}
 
 	public function actionUpdate($id) {
 		/**
 		* @var $model <?php echo $this->modelClass; ?>
+
 		*/
 		$model = $this->loadModel($id, '<?php echo $this->modelClass; ?>');
+		$data = $this->getPost('<?php echo $this->modelClass; ?>');
 
 <?php if ($this->enable_ajax_validation): ?>
 		$this->performAjaxValidation($model, '<?php echo $this->class2id($this->modelClass)?>-form');
 <?php endif; ?>
 
-		if (Yii::app()->request->getIsPostRequest() && $this->getPost('<?php echo $this->modelClass; ?>') !== null) {
-			$model->setAttributes($this->getPost('<?php echo $this->modelClass; ?>'));
+		if (Yii::app()->request->getIsPostRequest() && $data !== null) {
+			$model->setAttributes($data);
 <?php if ($this->hasManyManyRelation($this->modelClass)): ?>
 			$relatedData = <?php echo $this->generateGetPostRelatedData($this->modelClass, 4); ?>;
 <?php endif; ?>
@@ -73,14 +75,11 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 <?php else: ?>
 			if ($model->save()) {
 <?php endif; ?>
-				$this->redirect(array('view', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
+				$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
 			}
 		}
 
-		$this->render('update', array(
-				'model' => $model,
-			)
-		);
+		$this->render('update',compact( 'model'));
 	}
 
 	public function actionDelete($id) {
@@ -103,16 +102,17 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 	}
 
 	public function actionIndex() {
+		/**
+		* @var $model <?php echo $this->modelClass; ?>
+
+		*/
 		$model = new <?php echo $this->modelClass; ?>('search');
 		$model->unsetAttributes();
 
 		if ($this->getParam('<?php echo $this->modelClass; ?>')!== null)
 			$model->setAttributes($this->getParam('<?php echo $this->modelClass; ?>'));
 
-		$this->render('admin', array(
-				'model' => $model,
-			)
-		);
+		$this->render('admin', compact( 'model'));
 	}
 
 }
