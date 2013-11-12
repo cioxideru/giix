@@ -85,7 +85,11 @@ class GiixCrudCode extends CrudCode {
 		if ($column->isForeignKey) {
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
-			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5))";
+			if($column->allowNull)
+				//return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', CMap::mergeArray(array(null=>Yii::t('site','undefined')),GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true))),array('span'=>5))";
+				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5,'prompt' => Yii::t('app', 'Undefined')))";
+			else
+				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5))";
 		}
 
 		if (strtoupper($column->dbType) == 'TINYINT(1)'
