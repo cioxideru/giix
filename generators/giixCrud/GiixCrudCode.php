@@ -110,7 +110,12 @@ class GiixCrudCode extends CrudCode {
 		}
 		elseif (strtoupper($column->dbType) == 'DATE')
 		{
-			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datapicker','span'=>5))";
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array(
+					'data-date-format'=>'yyyy-mm-dd',
+					'data-provide'=>'datepicker',
+					'span'=>5,
+				)
+			)";
 		}
 		elseif(strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP')
 		{
@@ -122,7 +127,12 @@ class GiixCrudCode extends CrudCode {
 					'data-format' => 'mm/dd/yyyy hh:mm:ss'
 				)
 			);";*/
-			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datatimepicker','span'=>5))";
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array(
+					'data-date-format'=>'yyyy-mm-dd',
+					'data-provide'=>'datepicker',
+					'span'=>5,
+				)
+			)";
 		}
 		elseif (stripos($column->dbType, 'text') !== false)
 		{
