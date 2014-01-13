@@ -119,14 +119,6 @@ class GiixCrudCode extends CrudCode {
 		}
 		elseif(strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP')
 		{
-			/*return "echo '<div class=\"input-append\">'; \$this->widget(
-				'yiiwheels.widgets.datetimepicker.WhDateTimePicker',
-				array(
-					'model'=> \$model,
-					'attribute' => '{$column->name}',
-					'data-format' => 'mm/dd/yyyy hh:mm:ss'
-				)
-			);";*/
 			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array(
 					'data-date-format'=>'yyyy-mm-dd',
 					'data-provide'=>'datepicker',
