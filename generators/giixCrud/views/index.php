@@ -96,6 +96,20 @@ $('#{$class}_model').bind('keyup change', function(){
 	</div>
 
 	<div class="row sticky">
+		<?php echo $form->labelEx($model, 'use_tinymce'); ?>
+		<?php echo $form->dropDownList($model, 'use_tinymce', array(
+				'tinymce' => 'Use TinyMCE',
+				'textarea' => 'Use TextArea',
+			)
+		);
+		?>
+		<div class="tooltip">
+			Only for field with db type TEXT
+		</div>
+		<?php echo $form->error($model,'use_tinymce'); ?>
+	</div>
+
+	<div class="row sticky">
 		<?php echo $form->labelEx($model, 'enable_ajax_validation'); ?>
 		<?php echo $form->dropDownList($model, 'enable_ajax_validation', array(
 				1 => 'Enable ajax Validation',

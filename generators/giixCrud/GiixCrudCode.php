@@ -36,6 +36,8 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public $baseControllerClass = 'GxController';
 
+	public $use_tinymce = 'tinymce';
+
 	/**
 	 * Adds the new model attributes (class properties) to the rules.
 	 * #MethodTracker
@@ -46,7 +48,7 @@ class GiixCrudCode extends CrudCode {
 	 */
 	public function rules() {
 		return array_merge(parent::rules(), array(
-			array('authtype,form_inline, enable_ajax_validation', 'required'),
+			array('authtype,use_tinymce,form_inline, enable_ajax_validation', 'required'),
 		));
 	}
 
@@ -80,13 +82,12 @@ class GiixCrudCode extends CrudCode {
 	 * @param CDbColumnSchema $column The column.
 	 * @return string The source code line for the active field.
 	 */
-	public function generateActiveField($modelClass, $column) {
+	public function generateActiveField($modelClass, $column,$for_search_form = false) {
 
 		if ($column->isForeignKey) {
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
 			if($column->allowNull)
-				//return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', CMap::mergeArray(array(null=>Yii::t('site','undefined')),GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true))),array('span'=>5))";
 				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5,'prompt' => Yii::t('app', 'Undefined')))";
 			else
 				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)),array('span'=>5))";
@@ -119,16 +120,40 @@ class GiixCrudCode extends CrudCode {
 		}
 		elseif(strtoupper($column->dbType) == 'DATETIME' || strtoupper($column->dbType) == 'TIMESTAMP')
 		{
+<<<<<<< Updated upstream
 			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array(
 					'data-date-format'=>'yyyy-mm-dd',
 					'data-provide'=>'datepicker',
 					'span'=>5,
 				)
 			)";
+=======
+			return "echo \$form->textFieldControlGroup(\$model, '{$column->name}',array('data-datepicker'=>'datatimepicker','span'=>5))";
+>>>>>>> Stashed changes
 		}
 		elseif (stripos($column->dbType, 'text') !== false)
 		{
-			return "echo \$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
+			if($for_search_form){
+				return "echo \$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
+			}
+			if($this->use_tinymce=='tinymce'){
+				return "echo TbHtml::customControlGroup(\$this->widget('ext.yii-tinymce.TinyMce', array(
+							'model' => \$model,
+							'attribute' => '{$column->name}',
+							'htmlOptions' => array(
+								'rows' => 6,
+								'span'=>8
+							),
+						),true
+					),
+					'{$column->name}',
+					array('label'=>\$model->getAttributeLabel('{$column->name}'))
+				)";
+			}
+			else
+			{
+				return "echo \$form->textAreaControlGroup(\$model,'{$column->name}',array('rows'=>6,'span'=>8))";
+			}
 		}
 		else
 		{
@@ -206,15 +231,7 @@ class GiixCrudCode extends CrudCode {
 	 * @return string The source code line for the attribute.
 	 */
 	public function generateDetailViewAttribute($modelClass, $column) {
-		if (!$column->isForeignKey) {
-			if (strtoupper($column->dbType) == 'TINYINT(1)'
-					|| strtoupper($column->dbType) == 'BIT'
-					|| strtoupper($column->dbType) == 'BOOL'
-					|| strtoupper($column->dbType) == 'BOOLEAN') {
-				return "'{$column->name}:boolean'";
-			} else
-				return "'{$column->name}'";
-		} else {
+		if ($column->isForeignKey) {
 			// Find the relation name for this column.
 			$relation = $this->findRelation($modelClass, $column);
 			$relationName = $relation[0];
@@ -226,6 +243,28 @@ class GiixCrudCode extends CrudCode {
 			'type' => 'raw',
 			'value' => \$model->{$relationName} !== null ? GxHtml::link(GxHtml::encode(GxHtml::valueEx(\$model->{$relationName})), array('{$relatedControllerName}/view', 'id' => GxActiveRecord::extractPkValue(\$model->{$relationName}, true))) : null,
 			)";
+		}elseif (stripos(strtoupper($column->dbType),'TINYINT(4)')!==false){
+			$validators = $modelClass::model()->getValidators($column->name);
+			foreach($validators as $v){
+				if($v instanceof EnumValidator){
+					return "array(
+						'name' => '{$column->name}',
+						'value'=>{$v->enumClass}::getName(\$model->{$column->name}),
+					)";
+					break;
+				}
+			}
+		} else {
+			if (strtoupper($column->dbType) == 'TINYINT(1)'
+				|| strtoupper($column->dbType) == 'BIT'
+				|| strtoupper($column->dbType) == 'BOOL'
+				|| strtoupper($column->dbType) == 'BOOLEAN') {
+				return "'{$column->name}:boolean'";
+			} elseif(strtoupper($column->dbType) == 'TEXT' && $this->use_tinymce=='tinymce'){
+				return "'{$column->name}:html'";
+			}else
+				return "'{$column->name}'";
+
 		}
 	}
 
@@ -261,6 +300,11 @@ class GiixCrudCode extends CrudCode {
 						break;
 					}
 				}
+			}elseif(strtoupper($column->dbType) == 'TEXT' && $this->use_tinymce=='tinymce'){
+				return "array(
+						'name' => '{$column->name}',
+						'type'=>'html',
+					)";
 			}elseif (strtoupper($column->dbType) == 'DATE'){
 				return "array(
 						'name' => '{$column->name}',
@@ -302,7 +346,7 @@ class GiixCrudCode extends CrudCode {
 					|| strtoupper($column->dbType) == 'BOOLEAN')
 				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')), array('prompt' => Yii::t('app', 'All')))";
 			else // Common column. generateActiveField method will add 'echo' when necessary.
-				return $this->generateActiveField($this->modelClass, $column);
+				return $this->generateActiveField($this->modelClass, $column, true);
 		} else { // FK.
 			// Find the related model for this column.
 			$relation = $this->findRelation($modelClass, $column);
