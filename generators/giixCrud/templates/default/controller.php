@@ -42,10 +42,12 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 <?php else: ?>
 			if ($model->save()) {
 <?php endif; ?>
+				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+					'<strong>Saved!</strong>.');
 				if (Yii::app()->getRequest()->getIsAjaxRequest())
 					Yii::app()->end();
 				else
-					$this->redirect(array('view', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
+					$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
 			}
 		}
 
@@ -75,7 +77,9 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 <?php else: ?>
 			if ($model->save()) {
 <?php endif; ?>
-				$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
+				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+					'<strong>Saved!</strong>.');
+				//$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
 			}
 		}
 
