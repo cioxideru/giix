@@ -43,7 +43,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 			if ($model->save()) {
 <?php endif; ?>
 				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-					'<strong>Saved!</strong>.');
+					'<strong>Created!</strong> '.$model->label(1).' has been added.');
 				if (Yii::app()->getRequest()->getIsAjaxRequest())
 					Yii::app()->end();
 				else
@@ -77,8 +77,8 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 <?php else: ?>
 			if ($model->save()) {
 <?php endif; ?>
-				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-					'<strong>Saved!</strong>.');
+				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO,
+					'<strong>Saved!</strong> '.$model->label(1).' has been updated.');
 				//$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
 			}
 		}
@@ -89,7 +89,11 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 	public function actionDelete($id) {
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
 			try{
-				$this->loadModel($id, '<?php echo $this->modelClass; ?>')->delete();
+				$model = $this->loadModel($id, '<?php echo $this->modelClass; ?>');
+				$name = $model->label(1).' - "'.GxHtml::valueEx($model).'"';
+				$model->delete();
+				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING,
+				'<strong>Remove!</strong> is sucessfull for '.$name);
 			}catch(Exception $ex)
 			{
 				if(YII_DEBUG)
