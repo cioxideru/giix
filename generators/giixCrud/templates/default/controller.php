@@ -78,7 +78,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 			if ($model->save()) {
 <?php endif; ?>
 				Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO,
-					'<strong>Saved!</strong> '.$model->label(1).' has been updated.');
+					'<strong>Update!</strong> '.$model->label(1).' has been saved.');
 				//$this->redirect(array('update', 'id' => $model-><?php echo $this->tableSchema->primaryKey; ?>));
 			}
 		}
