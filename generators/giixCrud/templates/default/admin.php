@@ -68,6 +68,7 @@ if ($count >= 7)
 		array(
 			'class' => 'bootstrap.widgets.TbButtonColumn',
 			'htmlOptions'=>array('style'=>'width: 50px'),
+			'header'=>Yii::t('app','Actions'),
 			'buttons'=>array(
 				'update' => array(
 					'visible' => 'true',
