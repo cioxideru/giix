@@ -21,6 +21,10 @@ $this->menu=array(
 
 echo GxHtml::openTag('legend');
 	echo Yii::t('app', 'Update') . ' ' . GxHtml::encode($model->label()) . ' ' . GxHtml::encode(GxHtml::valueEx($model));
+	echo TbHtml::small(TbHtml::i(Yii::t('app', 'Fields with'). ' <span class="required">*</span> '. Yii::t('app', 'are required').'.'),array(
+			'pull' => TbHtml::PULL_RIGHT,
+		)
+	);
 echo GxHtml::closeTag('legend');
 
 

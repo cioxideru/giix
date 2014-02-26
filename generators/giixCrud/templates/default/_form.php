@@ -37,7 +37,6 @@ $form = $this->beginWidget('GxActiveForm', array(
 	)
 );
 
-	echo TbHtml::b(Yii::t('app', 'Fields with'). ' <span class="required">*</span> '. Yii::t('app', 'are required').'.');
 	echo $form->errorSummary($model);
 
 <?php

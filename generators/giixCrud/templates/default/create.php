@@ -18,6 +18,10 @@ $this->menu = array(
 
 echo GxHtml::openTag('legend');
 	echo Yii::t('app', 'Create') . ' ' . GxHtml::encode($model->label());
+	echo TbHtml::small(TbHtml::i(Yii::t('app', 'Fields with'). ' <span class="required">*</span> '. Yii::t('app', 'are required').'.'),array(
+			'pull' => TbHtml::PULL_RIGHT,
+		)
+	);
 echo GxHtml::closeTag('legend');
 
 $this->renderPartial('_form', compact(array_keys(get_defined_vars())));
