@@ -33,6 +33,22 @@ abstract class GxActiveRecord extends CActiveRecord {
 		return parent::model($className);
 	}
 
+	protected function getCustomAttributes() {
+		return array();
+	}
+
+	public function getAttributes($names=true){
+		$custom_attrs = $this->getCustomAttributes();
+		if(empty($custom_attrs))
+			return parent::getAttributes($names);
+
+		$attrs = parent::getAttributes($names);
+		if($names===true){
+			$attrs = CMap::mergeArray($attrs,$custom_attrs);
+		}
+		return $attrs;
+	}
+
 	/**
 	 * This method should be overridden to declare related pivot models for each MANY_MANY relationship.
 	 * The pivot model is used by {@link saveWithRelated} and by {@link saveMultiple}.
