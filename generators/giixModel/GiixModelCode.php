@@ -32,6 +32,8 @@ class GiixModelCode extends ModelCode {
 	 */
 	public $baseModelClass;
 
+	public $useEnum = 0;
+
 
 	/**
 	 * Prepares the code files to be generated.
@@ -43,6 +45,26 @@ class GiixModelCode extends ModelCode {
 	 * <li>Provides the pivot class names for MANY_MANY relations.</li>
 	 * </ul>
 	 */
+
+	public function rules()
+	{
+		return array_merge(
+					parent::rules(),
+					array(
+						array('useEnum', 'sticky'),
+					)
+		);
+	}
+
+	public function attributeLabels()
+	{
+		return array_merge(
+					parent::attributeLabels(),
+					array(
+						'useEnum'=>'Use Db Enum',
+					)
+		);
+	}
 	public function prepare() {
 		if (($pos = strrpos($this->tableName, '.')) !== false) {
 			$schema = substr($this->tableName, 0, $pos);

@@ -49,7 +49,10 @@ echo TbHtml::formActions(array(
 				'size'=>TbHtml::BUTTON_SIZE_DEFAULT,
 			)
 		),
-	));
+	),array(
+		'formLayout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
+	)
+);
 $this->endWidget();
 
 echo GxHtml::closeTag('div'); // form

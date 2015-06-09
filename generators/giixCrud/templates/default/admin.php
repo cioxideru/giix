@@ -43,14 +43,11 @@ echo GxHtml::openTag('div',array('class'=>'search-form','style'=>'display: none;
 echo GxHtml::closeTag('div'); // search form
 
 
-$this->widget('bootstrap.widgets.TbGridView', array(
+$this->widget('MTbGridView', array(
 	'id' => '<?php echo $this->class2id($this->modelClass); ?>-grid',
 	'type'=>'striped bordered condensed',
 	'dataProvider' => $model->search(),
 	'filter' => $model,
-	'pager'=>array(
-		'class'=>'ext.AjaxList.AjaxList',
-	),
 	'columns' => array(
 <?php
 $count = 0;

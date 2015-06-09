@@ -335,14 +335,14 @@ class GiixCrudCode extends CrudCode {
 					|| strtoupper($column->dbType) == 'BIT'
 					|| strtoupper($column->dbType) == 'BOOL'
 					|| strtoupper($column->dbType) == 'BOOLEAN')
-				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')), array('prompt' => Yii::t('app', 'All')))";
+				return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', array('0' => Yii::t('app', 'No'), '1' => Yii::t('app', 'Yes')), array('span'=>5,'prompt' => Yii::t('app', 'All')))";
 			else // Common column. generateActiveField method will add 'echo' when necessary.
 				return $this->generateActiveField($this->modelClass, $column, true);
 		} else { // FK.
 			// Find the related model for this column.
 			$relation = $this->findRelation($modelClass, $column);
 			$relatedModelClass = $relation[3];
-			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All')))";
+			return "echo \$form->dropDownListControlGroup(\$model, '{$column->name}', GxHtml::listDataEx({$relatedModelClass}::model()->findAllAttributes(null, true)), array('span'=>5,'prompt' => Yii::t('app', 'All')))";
 		}
 	}
 

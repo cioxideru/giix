@@ -116,7 +116,7 @@ abstract class <?php echo $this->baseModelClass; ?> extends <?php echo $this->ba
 		);
 	}
 
-	protected function initDefaultSearchCriteria(){
+	public function initDefaultSearchCriteria(){
 		$criteria = new CDbCriteria;
 <?php foreach($columns as $name=>$column): ?>
 	<?php $partial = ($column->type==='string' and !$column->isForeignKey); ?>

@@ -124,7 +124,12 @@ $('#{$class}_model').bind('keyup change', function(){
 
 	<div class="row sticky">
 		<?php echo $form->labelEx($model,'baseControllerClass'); ?>
-		<?php echo $form->textField($model,'baseControllerClass',array('size'=>65)); ?>
+		<?php //echo $form->textField($model,'baseControllerClass',array('size'=>65));
+			echo $form->dropDownList($model, 'baseControllerClass', array(
+				'GxController' => 'GxController',
+				'Controller'=> 'Controller'
+			));
+		?>
 		<div class="tooltip">
 			This is the class that the new CRUD controller class will extend from.
 			Please make sure the class exists and can be autoloaded.

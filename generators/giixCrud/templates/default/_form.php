@@ -60,7 +60,10 @@ foreach ($this->tableSchema->columns as $column){
 			)
 		),
 		TbHtml::resetButton('Reset'),
-	));
+	),array(
+		'formLayout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
+	)
+);
 
 $this->endWidget();
 echo GxHtml::closeTag('div');//form

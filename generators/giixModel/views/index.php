@@ -86,6 +86,13 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model,'modelClass'); ?>
 	</div>
+	<div>
+		<?php
+			/**@var $form CCodeForm*/
+			echo $form->label($model,'useEnum');
+			echo $form->checkBox($model,'useEnum');
+		?>
+	<div/>
 	<div class="row sticky">
 		<?php echo $form->labelEx($model,'baseClass'); ?>
 		<?php echo $form->textField($model,'baseClass',array('size'=>65)); ?>

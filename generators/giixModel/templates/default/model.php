@@ -19,7 +19,7 @@
 Yii::import('<?php echo "{$this->baseModelPath}.{$this->baseModelClass}"; ?>');
 
 class <?php echo $modelClass; ?> extends <?php echo $this->baseModelClass."\n"; ?>
-{
+{ <?php if($this->useEnum) echo "use EnumInDb;\n";?>
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
